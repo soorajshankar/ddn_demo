@@ -1,0 +1,17 @@
+version: 1
+spec:
+  environment: default
+  mode: replace
+  # Namespaces can be used to group certain objects of your metadata
+  # in a way that makes sense for you and your team
+  # You can have multiple HML files belong to a namespace
+  # and you can have multiple namespaces in a project
+  # We have created a default namespace for you, and added a HML file to it to get you started
+  # Please note that default is a special namespace that is created for every project
+  # and it cannot be deleted
+  namespaces:
+  - name: default
+    resources:
+    - ./namespaces/default/Configs/metadata.hml
+    
+  

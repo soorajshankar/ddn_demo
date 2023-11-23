@@ -1,0 +1,14 @@
+version: 1
+project: close-seagull-8730
+
+# A build profile specifies your projects environment
+# and the association of namespaces to HML files
+# You can create different build profiles for different environments,
+# like production and staging, which may reference environment specific auth configs
+# We have created one for you to get you started
+buildProfiles:
+  - build-profile.yaml
+
+# Default build profile refers to build profile
+# that is used when you create a build and don't specify the build profile
+defaultBuildProfile: build-profile.yaml
