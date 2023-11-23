@@ -498,3 +498,239 @@ definition:
       target:
         modelField:
           - fieldName: user_id
+---
+kind: DataConnector
+version: v1
+definition:
+  name: functions
+  url:
+    singleUrl: http://asia-south1-a-001.secure-connect.cloud.internal:2029
+    # singleUrl: http://127.0.0.1:8100
+  schema:
+    scalar_types:
+      insert_user_output:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+      String:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+      insert_todos_output:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+      update_todo_output_field_returning:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+    object_types:
+      update_todo_output:
+        fields:
+          returning:
+            type:
+              type: named
+              name: update_todo_output_field_returning
+          status:
+            type:
+              type: named
+              name: String
+    collections: []
+    functions: []
+    procedures:
+      - name: insert_user
+        arguments:
+          user_name:
+            type:
+              type: named
+              name: String
+        result_type:
+          type: named
+          name: insert_user_output
+      - name: insert_todos
+        arguments:
+          user_id:
+            type:
+              type: named
+              name: String
+          todo:
+            type:
+              type: named
+              name: String
+        result_type:
+          type: named
+          name: insert_todos_output
+      - name: update_todo
+        arguments:
+          todo_id:
+            type:
+              type: named
+              name: String
+          status:
+            type:
+              type: named
+              name: String
+        result_type:
+          type: named
+          name: update_todo_output
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: insert_user_output
+  graphql:
+    typeName: insertUserOutput
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: functions
+  dataConnectorScalarType: insert_user_output
+  representation: insert_user_output
+  graphql:
+    comparisonExpressionTypeName: insertUserOutputComparisonExp
+
+---
+kind: Command
+version: v1
+definition:
+  name: insert_user
+  outputType: insert_user_output!
+  arguments:
+    - name: user_name
+      type: String!
+  source:
+    dataConnectorName: functions
+    dataConnectorCommand:
+      procedure: insert_user
+  graphql:
+    rootFieldKind: Mutation
+    rootFieldName: insertUser
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: insert_user
+  permissions:
+    - role: admin
+      allowExecution: true
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: insert_todos_output
+  graphql:
+    typeName: insertTodosOutput
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: functions
+  dataConnectorScalarType: insert_todos_output
+  representation: insert_todos_output
+  graphql:
+    comparisonExpressionTypeName: insertTodosOutputComparisonExp
+
+---
+kind: Command
+version: v1
+definition:
+  name: insert_todos
+  outputType: insert_todos_output!
+  arguments:
+    - name: user_id
+      type: String!
+    - name: todo
+      type: String!
+  source:
+    dataConnectorName: functions
+    dataConnectorCommand:
+      procedure: insert_todos
+  graphql:
+    rootFieldKind: Mutation
+    rootFieldName: insertTodos
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: insert_todos
+  permissions:
+    - role: admin
+      allowExecution: true
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: update_todo_output_field_returning
+  graphql:
+    typeName: updateTodoOutputFieldReturning
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: functions
+  dataConnectorScalarType: update_todo_output_field_returning
+  representation: update_todo_output_field_returning
+  graphql:
+    comparisonExpressionTypeName: updateTodoOutputFieldReturningComparisonExp
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: update_todo_output
+  graphql:
+    typeName: updateTodoOutput
+  fields:
+    - name: returning
+      type: update_todo_output_field_returning!
+    - name: status
+      type: String!
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: update_todo_output
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - returning
+          - status
+
+---
+kind: Command
+version: v1
+definition:
+  name: update_todo
+  outputType: update_todo_output!
+  arguments:
+    - name: todo_id
+      type: String!
+    - name: status
+      type: String!
+  source:
+    dataConnectorName: functions
+    dataConnectorCommand:
+      procedure: update_todo
+  graphql:
+    rootFieldKind: Mutation
+    rootFieldName: updateTodo
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: update_todo
+  permissions:
+    - role: admin
+      allowExecution: true
