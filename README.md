@@ -31,7 +31,8 @@ If you have a PostgresDB running locally, execute the SQL to initialise the tabl
 -- Create 'users' table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- Create 'todos' table with a foreign key reference to 'users'
