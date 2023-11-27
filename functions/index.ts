@@ -1,5 +1,7 @@
 import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
+import Filter from "npm:bad-words@3.0.4";
+
 const dbConfig = {
   user: "user_sooraj",
   hostname: "127.0.0.1",
@@ -9,6 +11,7 @@ const dbConfig = {
   ssl: true,
   sslmode: "require",
 };
+const filter = new Filter();
 
 export async function insert_user(user_name: string): Promise<
   | { id: string; name: string; created_at: string }
@@ -52,7 +55,11 @@ export async function insert_todos(
   | {}
 > {
   console.log(">> NEW TODO");
-  const client = new Client(dbConfig);
+  const client = new Client(dbConfig); 
+  if(filter.isProfane(todo)){
+    console.error("Todo text contains bad words")
+    throw new Error("Todo text contains bad words")
+  }
 
   try {
     await client.connect();
@@ -83,8 +90,25 @@ export async function insert_todos(
   }
 }
 
+/**
+ * Returns the github bio for the userid provided
+ *
+ * @param username - Username of the user who's bio will be fetched.
+ * @returns The github bio for the requested user.
+ * @pure This function should only query data without making modifications
+ */
+export async function get_github_profile_description(username: string): Promise<string> {
+  const foo = await fetch(`https://api.github.com/users/${username}`);
+  const response = await foo.json();
+  return response.bio;
+}
 
-export async function update_todo(todo_id: string, status: string) {
+/**
+ * @pure
+ */
+
+export async function update_todo(todo_id: string, status: string){
+  console.log(">>>")
   const client = new Client(dbConfig);
   try {
     await client.connect();

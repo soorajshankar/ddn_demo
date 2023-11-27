@@ -1,0 +1,111 @@
+kind: DataConnector
+version: v1
+definition:
+  name: functions
+  url:
+    singleUrl: http://asia-south1-a-001.secure-connect.cloud.internal:2028
+    # singleUrl: http://127.0.0.1:8100
+  schema:
+    scalar_types:
+      insert_user_output:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+      String:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+      insert_todos_output:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+      update_todo_output_field_returning:
+        aggregate_functions: {}
+        comparison_operators: {}
+        update_operators: {}
+    object_types:
+      update_todo_output:
+        fields:
+          returning:
+            type:
+              type: named
+              name: update_todo_output_field_returning
+          status:
+            type:
+              type: named
+              name: String
+    collections: []
+    functions:
+      - name: get_github_profile_description
+        description: Returns the github bio for the userid provided
+        arguments:
+          username:
+            description: "- Username of the user who's bio will be fetched."
+            type:
+              type: named
+              name: String
+        result_type:
+          type: named
+          name: String
+    procedures:
+      - name: insert_user
+        arguments:
+          user_name:
+            type:
+              type: named
+              name: String
+        result_type:
+          type: named
+          name: insert_user_output
+      - name: insert_todos
+        arguments:
+          user_id:
+            type:
+              type: named
+              name: String
+          todo:
+            type:
+              type: named
+              name: String
+        result_type:
+          type: named
+          name: insert_todos_output
+      - name: update_todo
+        arguments:
+          todo_id:
+            type:
+              type: named
+              name: String
+          status:
+            type:
+              type: named
+              name: String
+        result_type:
+          type: named
+          name: update_todo_output
+
+---
+kind: Command
+version: v1
+definition:
+  name: get_github_profile_description
+  outputType: String!
+  arguments:
+    - name: username
+      type: String!
+  source:
+    dataConnectorName: functions
+    dataConnectorCommand:
+      function: get_github_profile_description
+  graphql:
+    rootFieldKind: Query
+    rootFieldName: getGithubProfileDescription
+
+---
+kind: CommandPermissions
+version: v1
+definition:
+  commandName: get_github_profile_description
+  permissions:
+    - role: admin
+      allowExecution: true

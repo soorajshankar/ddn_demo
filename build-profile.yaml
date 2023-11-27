@@ -16,6 +16,6 @@ spec:
   subgraphs:
   - name: default
     resources:
-    - subgraphs/default/*
+    - subgraphs/default/**
     
   

@@ -1,0 +1,258 @@
+kind: ScalarType
+version: v1
+definition:
+  name: int4
+  graphql:
+    typeName: int4
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: text
+  graphql:
+    typeName: text
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: postgres
+  dataConnectorScalarType: int4
+  representation: int4
+  graphql:
+    comparisonExpressionTypeName: int4ComparisonExp
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: postgres
+  dataConnectorScalarType: text
+  representation: text
+  graphql:
+    comparisonExpressionTypeName: textComparisonExp
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: todos
+  graphql:
+    typeName: todos
+    inputTypeName: todosInput
+  fields:
+    - name: id
+      type: int4!
+    - name: status
+      type: text
+    - name: todo
+      type: text!
+    - name: user_id
+      type: int4
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: todos
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - status
+          - todo
+          - user_id
+
+---
+kind: Model
+version: v1
+definition:
+  name: todos
+  objectType: todos
+  filterableFields:
+    - fieldName: id
+      operators:
+        enableAll: true
+    - fieldName: status
+      operators:
+        enableAll: true
+    - fieldName: todo
+      operators:
+        enableAll: true
+    - fieldName: user_id
+      operators:
+        enableAll: true
+  orderableFields:
+    - fieldName: id
+      orderByDirections:
+        enableAll: true
+    - fieldName: status
+      orderByDirections:
+        enableAll: true
+    - fieldName: todo
+      orderByDirections:
+        enableAll: true
+    - fieldName: user_id
+      orderByDirections:
+        enableAll: true
+  arguments: []
+  graphql:
+    selectUniques:
+      - queryRootField: todosById
+        uniqueIdentifier:
+          - id
+    selectMany:
+      queryRootField: todos
+    filterExpressionType: todosBoolExp
+    orderByExpressionType: todosOrderBy
+  source:
+    collection: todos
+    dataConnectorName: postgres
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: todos
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: ScalarType
+version: v1
+definition:
+  name: varchar
+  graphql:
+    typeName: varchar
+
+---
+kind: DataConnectorScalarRepresentation
+version: v1
+definition:
+  dataConnectorName: postgres
+  dataConnectorScalarType: varchar
+  representation: varchar
+  graphql:
+    comparisonExpressionTypeName: varcharComparisonExp
+
+---
+kind: ObjectType
+version: v1
+definition:
+  name: users
+  graphql:
+    typeName: users
+    inputTypeName: usersInput
+  fields:
+    - name: email
+      type: varchar!
+    - name: id
+      type: int4!
+    - name: name
+      type: varchar!
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: users
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - email
+          - id
+          - name
+
+---
+kind: Model
+version: v1
+definition:
+  name: users
+  objectType: users
+  filterableFields:
+    - fieldName: email
+      operators:
+        enableAll: true
+    - fieldName: id
+      operators:
+        enableAll: true
+    - fieldName: name
+      operators:
+        enableAll: true
+  orderableFields:
+    - fieldName: email
+      orderByDirections:
+        enableAll: true
+    - fieldName: id
+      orderByDirections:
+        enableAll: true
+    - fieldName: name
+      orderByDirections:
+        enableAll: true
+  arguments: []
+  graphql:
+    selectUniques:
+      - queryRootField: usersByEmail
+        uniqueIdentifier:
+          - email
+      - queryRootField: usersById
+        uniqueIdentifier:
+          - id
+    selectMany:
+      queryRootField: users
+    filterExpressionType: usersBoolExp
+    orderByExpressionType: usersOrderBy
+  source:
+    collection: users
+    dataConnectorName: postgres
+
+---
+kind: ModelPermissions
+version: v1
+definition:
+  modelName: users
+  permissions:
+    - role: admin
+      select:
+        filter: null
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: user
+  source: todos
+  target:
+    model:
+      relationshipType: Object
+      name: users
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: user_id
+      target:
+        modelField:
+          - fieldName: id
+
+---
+kind: Relationship
+version: v1
+definition:
+  name: todos
+  source: users
+  target:
+    model:
+      relationshipType: Array
+      name: todos
+  mapping:
+    - source:
+        fieldPath:
+          - fieldName: id
+      target:
+        modelField:
+          - fieldName: user_id

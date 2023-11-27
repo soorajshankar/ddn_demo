@@ -11,3 +11,240 @@ definition:
         connectionUri:
           uri:
             value: postgres://user_sooraj:pass@asia-south1-a-001.secure-connect.cloud.internal:2005/db
+        metadata:
+          tables:
+            todos:
+              schemaName: public
+              tableName: todos
+              columns:
+                id:
+                  name: id
+                  type: int4
+                  nullable: nonNullable
+                  description: null
+                status:
+                  name: status
+                  type: text
+                  nullable: nullable
+                  description: null
+                todo:
+                  name: todo
+                  type: text
+                  nullable: nonNullable
+                  description: null
+                user_id:
+                  name: user_id
+                  type: int4
+                  nullable: nullable
+                  description: null
+              uniquenessConstraints:
+                todos_pkey:
+                  - id
+              foreignRelations:
+                todos_user_id_fkey:
+                  foreignSchema: public
+                  foreignTable: users
+                  columnMapping:
+                    user_id: id
+              description: null
+            users:
+              schemaName: public
+              tableName: users
+              columns:
+                email:
+                  name: email
+                  type: varchar
+                  nullable: nonNullable
+                  description: null
+                id:
+                  name: id
+                  type: int4
+                  nullable: nonNullable
+                  description: null
+                name:
+                  name: name
+                  type: varchar
+                  nullable: nonNullable
+                  description: null
+              uniquenessConstraints:
+                users_email_key:
+                  - email
+                users_pkey:
+                  - id
+              foreignRelations: {}
+              description: null
+          nativeQueries: {}
+          aggregateFunctions:
+            int4:
+              bit_and:
+                returnType: int4
+              bit_or:
+                returnType: int4
+              max:
+                returnType: int4
+              min:
+                returnType: int4
+            text:
+              max:
+                returnType: text
+              min:
+                returnType: text
+          comparisonOperators:
+            int4:
+              _eq:
+                operatorName: =
+                argumentType: int4
+              _gt:
+                operatorName: ">"
+                argumentType: int4
+              _gte:
+                operatorName: ">="
+                argumentType: int4
+              _lt:
+                operatorName: <
+                argumentType: int4
+              _lte:
+                operatorName: <=
+                argumentType: int4
+              _neq:
+                operatorName: <>
+                argumentType: int4
+            text:
+              _eq:
+                operatorName: =
+                argumentType: text
+              _gt:
+                operatorName: ">"
+                argumentType: text
+              _gte:
+                operatorName: ">="
+                argumentType: text
+              _ilike:
+                operatorName: ~~*
+                argumentType: text
+              _iregex:
+                operatorName: ~*
+                argumentType: text
+              _like:
+                operatorName: ~~
+                argumentType: text
+              _lt:
+                operatorName: <
+                argumentType: text
+              _lte:
+                operatorName: <=
+                argumentType: text
+              _neq:
+                operatorName: <>
+                argumentType: text
+              _nilike:
+                operatorName: "!~~*"
+                argumentType: text
+              _niregex:
+                operatorName: "!~*"
+                argumentType: text
+              _nlike:
+                operatorName: "!~~"
+                argumentType: text
+              _nregex:
+                operatorName: "!~"
+                argumentType: text
+              _regex:
+                operatorName: "~"
+                argumentType: text
+            varchar:
+              _eq:
+                operatorName: =
+                argumentType: varchar
+              _gt:
+                operatorName: ">"
+                argumentType: varchar
+              _gte:
+                operatorName: ">="
+                argumentType: varchar
+              _ilike:
+                operatorName: ~~*
+                argumentType: varchar
+              _iregex:
+                operatorName: ~*
+                argumentType: varchar
+              _like:
+                operatorName: ~~
+                argumentType: varchar
+              _lt:
+                operatorName: <
+                argumentType: varchar
+              _lte:
+                operatorName: <=
+                argumentType: varchar
+              _neq:
+                operatorName: <>
+                argumentType: varchar
+              _nilike:
+                operatorName: "!~~*"
+                argumentType: varchar
+              _niregex:
+                operatorName: "!~*"
+                argumentType: varchar
+              _nlike:
+                operatorName: "!~~"
+                argumentType: varchar
+              _nregex:
+                operatorName: "!~"
+                argumentType: varchar
+              _regex:
+                operatorName: "~"
+                argumentType: varchar
+        configureOptions:
+          excludedSchemas:
+            - information_schema
+            - pg_catalog
+            - tiger
+            - crdb_internal
+            - columnar
+            - columnar_internal
+          unqualifiedSchemas:
+            - public
+          comparisonOperatorMapping:
+            - operatorName: =
+              exposedName: _eq
+            - operatorName: <=
+              exposedName: _lte
+            - operatorName: ">"
+              exposedName: _gt
+            - operatorName: ">="
+              exposedName: _gte
+            - operatorName: <
+              exposedName: _lt
+            - operatorName: "!="
+              exposedName: _neq
+            - operatorName: LIKE
+              exposedName: _like
+            - operatorName: NOT LIKE
+              exposedName: _nlike
+            - operatorName: ILIKE
+              exposedName: _ilike
+            - operatorName: NOT ILIKE
+              exposedName: _nilike
+            - operatorName: SIMILAR TO
+              exposedName: _similar
+            - operatorName: NOT SIMILAR TO
+              exposedName: _nsimilar
+            - operatorName: <>
+              exposedName: _neq
+            - operatorName: ~~
+              exposedName: _like
+            - operatorName: "!~~"
+              exposedName: _nlike
+            - operatorName: ~~*
+              exposedName: _ilike
+            - operatorName: "!~~*"
+              exposedName: _nilike
+            - operatorName: "~"
+              exposedName: _regex
+            - operatorName: "!~"
+              exposedName: _nregex
+            - operatorName: ~*
+              exposedName: _iregex
+            - operatorName: "!~*"
+              exposedName: _niregex
