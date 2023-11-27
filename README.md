@@ -275,3 +275,41 @@ hasura build create --description "Added database tables"
 
 
 🎉 Whoola, we have a TODO app backend up and running across the globe on Hasura DDN. 
+
+
+### Other code snippets 
+
+1. Input validations: Add bad words check
+
+```js
+if (!todo) {
+  return { status: "error", errorMessage: "Invalid todo text" };
+} else if (filter.isProfane(todo)) {
+  console.error("Todo text contains bad words");
+  return { status: "error", errorMessage: "Todo text contains bad words" };
+}
+```
+
+2. Input sanitization :  remove special characters from the todo text
+  todo = todo.replace(/[^\w\s]/gi, "");
+
+```js
+// remove special characters from the todo text
+todo = todo.replace(/[^\w\s]/gi, "");
+```
+3. API Integrations
+
+```js
+const notifySlack = await fetch(
+  "https://hooks.slack.com/services/XXXXX",
+  {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      text: "New Todo Added: \n" + todo,
+    }),
+  }
+);
+```

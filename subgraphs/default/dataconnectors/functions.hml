@@ -15,7 +15,7 @@ definition:
         aggregate_functions: {}
         comparison_operators: {}
         update_operators: {}
-      insert_todos_output:
+      Float:
         aggregate_functions: {}
         comparison_operators: {}
         update_operators: {}
@@ -24,6 +24,34 @@ definition:
         comparison_operators: {}
         update_operators: {}
     object_types:
+      insert_todos_output:
+        fields:
+          status:
+            type:
+              type: named
+              name: String
+          errorMessage:
+            type:
+              type: named
+              name: String
+          data:
+            type:
+              type: named
+              name: todoType
+      todoType:
+        fields:
+          id:
+            type:
+              type: named
+              name: Float
+          user_id:
+            type:
+              type: named
+              name: Float
+          todo:
+            type:
+              type: named
+              name: String
       update_todo_output:
         fields:
           returning:
@@ -35,18 +63,7 @@ definition:
               type: named
               name: String
     collections: []
-    functions:
-      - name: get_github_profile_description
-        description: Returns the github bio for the userid provided
-        arguments:
-          username:
-            description: "- Username of the user who's bio will be fetched."
-            type:
-              type: named
-              name: String
-        result_type:
-          type: named
-          name: String
+    functions: []
     procedures:
       - name: insert_user
         arguments:
@@ -83,29 +100,3 @@ definition:
         result_type:
           type: named
           name: update_todo_output
-
----
-kind: Command
-version: v1
-definition:
-  name: get_github_profile_description
-  outputType: String!
-  arguments:
-    - name: username
-      type: String!
-  source:
-    dataConnectorName: functions
-    dataConnectorCommand:
-      function: get_github_profile_description
-  graphql:
-    rootFieldKind: Query
-    rootFieldName: getGithubProfileDescription
-
----
-kind: CommandPermissions
-version: v1
-definition:
-  commandName: get_github_profile_description
-  permissions:
-    - role: admin
-      allowExecution: true

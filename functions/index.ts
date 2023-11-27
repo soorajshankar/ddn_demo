@@ -42,24 +42,29 @@ export async function insert_user(user_name: string): Promise<
     await client.end();
   }
 }
+type todoType = {
+  id: number;
+  user_id: number;
+  todo: string;
+};
 
 export async function insert_todos(
   user_id: string,
   todo: string
-): Promise<
-  | { id: string; user_id: string; todo: string; created_at: string }
-  | { message: string }
-  | {
-      error: string;
-    }
-  | {}
-> {
+): Promise<{ status: string; errorMessage?: string; data?: todoType }> {
   console.log(">> NEW TODO");
-  const client = new Client(dbConfig); 
-  if(filter.isProfane(todo)){
-    console.error("Todo text contains bad words")
-    throw new Error("Todo text contains bad words")
+  const client = new Client(dbConfig);
+
+  // Input validations : Check if the todo text is empty or contains bad words
+  if (!todo) {
+    return { status: "error", errorMessage: "Invalid todo text" };
+  } else if (filter.isProfane(todo)) {
+    console.error("Todo text contains bad words");
+    return { status: "error", errorMessage: "Todo text contains bad words" };
   }
+
+  // Input sanitization :  remove special characters from the todo text
+  todo = todo.replace(/[^\w\s]/gi, "");
 
   try {
     await client.connect();
@@ -71,44 +76,39 @@ export async function insert_todos(
     });
 
     if (userExistsQuery.rows.length === 0) {
-      return { message: "User not found. Insert Failed" };
+      return { status: "error", errorMessage: "User not found. Insert Failed" };
     }
     const result = await client.queryObject({
       text: `INSERT INTO todos(user_id,todo) VALUES ('${user_id}','${todo}') RETURNING *`,
     });
 
     if (result && result.rows.length > 0 && result.rows[0]) {
-      return result.rows[0];
+      // Notify slack about the new todo
+      const notifySlack = await fetch(
+        "https://hooks.slack.com/services/XX",
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            text: "New Todo Added: \n" + todo,
+          }),
+        }
+      );
+      return { status: "SUCCESS", data: result.rows[0] as any };
     } else {
-      return { message: "Insert Failed" };
+      return { status: "ERROR", errorMessage: "Insert Failed" };
     }
   } catch (error) {
     console.error("Error:", error);
-    return { error: "Error: " + error.message };
+    return { status: "ERROR", errorMessage: error.message };
   } finally {
     await client.end();
   }
 }
 
-/**
- * Returns the github bio for the userid provided
- *
- * @param username - Username of the user who's bio will be fetched.
- * @returns The github bio for the requested user.
- * @pure This function should only query data without making modifications
- */
-export async function get_github_profile_description(username: string): Promise<string> {
-  const foo = await fetch(`https://api.github.com/users/${username}`);
-  const response = await foo.json();
-  return response.bio;
-}
-
-/**
- * @pure
- */
-
-export async function update_todo(todo_id: string, status: string){
-  console.log(">>>")
+export async function update_todo(todo_id: string, status: string) {
   const client = new Client(dbConfig);
   try {
     await client.connect();

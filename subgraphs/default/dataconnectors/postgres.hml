@@ -10,7 +10,7 @@ definition:
         version: 1
         connectionUri:
           uri:
-            value: postgres://user_sooraj:pass@asia-south1-a-001.secure-connect.cloud.internal:2005/db
+            value: postgres://user_sooraj:pass@asia-south1-a-001.secure-connect.cloud.internal:2006/db
         metadata:
           tables:
             todos:

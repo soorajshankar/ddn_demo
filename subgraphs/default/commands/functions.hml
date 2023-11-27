@@ -42,22 +42,62 @@ definition:
       allowExecution: true
 
 ---
-kind: ScalarType
+kind: ObjectType
+version: v1
+definition:
+  name: todoType
+  graphql:
+    typeName: todoType
+    inputTypeName: todoTypeInput
+  fields:
+    - name: id
+      type: Float!
+    - name: user_id
+      type: Float!
+    - name: todo
+      type: String!
+
+---
+kind: ObjectType
 version: v1
 definition:
   name: insert_todos_output
   graphql:
     typeName: insertTodosOutput
+    inputTypeName: insertTodosOutputInput
+  fields:
+    - name: status
+      type: String!
+    - name: errorMessage
+      type: String!
+    - name: data
+      type: todoType!
 
 ---
-kind: DataConnectorScalarRepresentation
+kind: TypePermissions
 version: v1
 definition:
-  dataConnectorName: functions
-  dataConnectorScalarType: insert_todos_output
-  representation: insert_todos_output
-  graphql:
-    comparisonExpressionTypeName: insertTodosOutputComparisonExp
+  typeName: todoType
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - id
+          - user_id
+          - todo
+
+---
+kind: TypePermissions
+version: v1
+definition:
+  typeName: insert_todos_output
+  permissions:
+    - role: admin
+      output:
+        allowedFields:
+          - status
+          - errorMessage
+          - data
 
 ---
 kind: Command
