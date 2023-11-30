@@ -1,0 +1,6 @@
+{
+    "functions": "./functions/index.ts",
+    "vendor": "./vendor",
+    "preVendor": true,
+    "schemaMode": "INFER"
+  }
